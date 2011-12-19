@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# TestWorksheet -- Spreadheet -- 20.12.2011 -- y.grauwoelfchen@gmail.com
 # TestWorksheet -- Spreadheet -- 30.09.2008 -- hwyss@ywesee.com
 
 $: << File.expand_path('../lib', File.dirname(__FILE__))
@@ -32,6 +33,14 @@ module Spreadsheet
       @sheet[0,1] = nil
       assert_equal 2, @sheet.column_count
       assert_equal 2, @sheet.row_count
+    end
+    def test_merge_cells
+      assert @sheet.merged_cells.empty?
+      @sheet.merge_cells *[0, 0, 0, 1] # row direction
+      @sheet.merge_cells *[1, 0, 2, 0] # column direction
+      assert_equal 2, @sheet.merged_cells.size
+      assert_equal [0, 0, 0, 1], @sheet.merged_cells.shift
+      assert_equal [1, 2, 0, 0], @sheet.merged_cells.shift
     end
     def test_column_count
       assert_equal 0, @sheet.column_count
