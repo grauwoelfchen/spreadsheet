@@ -10,13 +10,14 @@ module Spreadsheet
 # to use any of these.
 class Worksheet < Spreadsheet::Worksheet
   include Spreadsheet::Excel::Offset
-  offset :dimensions
+  offset :dimensions, :merged_cells
   attr_reader :offset, :ole, :links, :guts
   def initialize opts = {}
     @row_addresses = nil
     super
     @offset, @ole, @reader = opts[:offset], opts[:ole], opts[:reader]
     @dimensions = nil
+    @merged_cells = []
     @links = {}
     @guts = {}
   end

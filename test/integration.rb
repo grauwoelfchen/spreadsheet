@@ -787,6 +787,7 @@ module Spreadsheet
       book = Spreadsheet::Workbook.new
       sheet = book.create_worksheet :name => 'merged cells'
       sheet[3, 0] = 'merge'
+      assert sheet.merged_cells.empty?
       sheet.merge_cells *[0, 0, 0, 1]
       sheet.merge_cells *[1, 0, 2, 0]
       assert_equal [0, 0, 0, 1], sheet.merged_cells[0]
@@ -801,6 +802,8 @@ module Spreadsheet
       assert_equal 2, sheet.merged_cells.size
       assert_equal [0, 0, 0, 1], sheet.merged_cells.shift
       assert_equal [1, 2, 0, 0], sheet.merged_cells.shift
+      assert sheet.offsets.has_key?(:merged_cells)
+      assert_equal 2, sheet.offsets[:merged_cells].size
     end
     def test_merge_cells_in_existing_file
       path = File.join @data, 'test_version_excel97.xls'
@@ -810,6 +813,7 @@ module Spreadsheet
       assert_equal 'Microsoft Excel 97/2000/XP', book.version_string
       sheet = book.create_worksheet :name => 'merged cells'
       sheet[3, 0] = 'merge'
+      assert sheet.merged_cells.empty?
       sheet.merge_cells *[0, 0, 0, 1]
       sheet.merge_cells *[1, 0, 2, 0]
       assert_equal [0, 0, 0, 1], sheet.merged_cells[0]
@@ -824,6 +828,8 @@ module Spreadsheet
       assert_equal 2, sheet.merged_cells.size
       assert_equal [0, 0, 0, 1], sheet.merged_cells.shift
       assert_equal [1, 2, 0, 0], sheet.merged_cells.shift
+      assert sheet.offsets.has_key?(:merged_cells)
+      assert_equal 2, sheet.offsets[:merged_cells].size
     end
     def test_write_to_stringio
       book = Spreadsheet::Excel::Workbook.new
