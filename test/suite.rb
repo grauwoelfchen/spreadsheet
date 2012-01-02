@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# suite.rb -- spreadsheet -- 01.01.2012 -- y.grauwoelfchen@gmail.com
 # suite.rb -- spreadsheet -- 26.07.2011 -- zdavatz@ywesee.com
 
 require 'rubygems' if RUBY_VERSION < '1.9'

@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# TestIntegration -- spreadheet -- 29.12.2011 -- y.grauwoelfchen@gmail.com
 # TestIntegration -- spreadheet -- 07.09.2011 -- mhatakeyama@ywesee.com
 # TestIntegration -- spreadheet -- 08.10.2007 -- hwyss@ywesee.com
 
