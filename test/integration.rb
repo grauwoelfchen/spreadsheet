@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# TestIntegration -- spreadheet -- 29.12.2011 -- y.grauwoelfchen@gmail.com
 # TestIntegration -- spreadheet -- 07.09.2011 -- mhatakeyama@ywesee.com
 # TestIntegration -- spreadheet -- 08.10.2007 -- hwyss@ywesee.com
 
@@ -782,6 +783,54 @@ module Spreadsheet
       assert_equal 0.0001, row[0]
       row = sheet.row 9
       assert_equal 0.00009, row[0]
+    end
+    def test_merge_cells_in_new_file
+      book = Spreadsheet::Workbook.new
+      sheet = book.create_worksheet :name => 'merged cells'
+      sheet[3, 0] = 'merge'
+      assert sheet.merged_cells.empty?
+      sheet.merge_cells *[0, 0, 0, 1]
+      sheet.merge_cells *[1, 0, 2, 0]
+      assert_equal [0, 0, 0, 1], sheet.merged_cells[0]
+      assert_equal [1, 2, 0, 0], sheet.merged_cells[1]
+      path = File.join @var, 'test_merge_cells.xls'
+      book.write path
+      assert_nothing_raised do book = Spreadsheet.open path end
+      assert_instance_of Spreadsheet::Excel::Workbook, book
+      sheet = book.worksheet 0
+      assert_equal 'merged cells', sheet.name
+      assert_equal 'merge', sheet[3, 0]
+      assert_equal 2, sheet.merged_cells.size
+      assert_equal [0, 0, 0, 1], sheet.merged_cells.shift
+      assert_equal [1, 2, 0, 0], sheet.merged_cells.shift
+      assert sheet.offsets.has_key?(:merged_cells)
+      assert_equal 2, sheet.offsets[:merged_cells].size
+    end
+    def test_merge_cells_in_existing_file
+      path = File.join @data, 'test_version_excel97.xls'
+      book = Spreadsheet.open path
+      assert_instance_of Spreadsheet::Excel::Workbook, book
+      assert_equal 8, book.biff_version
+      assert_equal 'Microsoft Excel 97/2000/XP', book.version_string
+      sheet = book.create_worksheet :name => 'merged cells'
+      sheet[3, 0] = 'merge'
+      assert sheet.merged_cells.empty?
+      sheet.merge_cells *[0, 0, 0, 1]
+      sheet.merge_cells *[1, 0, 2, 0]
+      assert_equal [0, 0, 0, 1], sheet.merged_cells[0]
+      assert_equal [1, 2, 0, 0], sheet.merged_cells[1]
+      path = File.join @var, 'test_merge_cells.xls'
+      book.write path
+      assert_nothing_raised do book = Spreadsheet.open path end
+      assert_instance_of Spreadsheet::Excel::Workbook, book
+      sheet = book.worksheets.pop
+      assert_equal 'merged cells', sheet.name
+      assert_equal 'merge', sheet[3, 0]
+      assert_equal 2, sheet.merged_cells.size
+      assert_equal [0, 0, 0, 1], sheet.merged_cells.shift
+      assert_equal [1, 2, 0, 0], sheet.merged_cells.shift
+      assert sheet.offsets.has_key?(:merged_cells)
+      assert_equal 2, sheet.offsets[:merged_cells].size
     end
     def test_write_to_stringio
       book = Spreadsheet::Excel::Workbook.new
